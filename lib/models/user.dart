@@ -1,9 +1,10 @@
 class User {
+  String uid;
   String username;
   String password;
   int current;
-
-  User({this.current, this.username, this.password});
+  User({this.uid});
+  // User({this.current, this.username, this.password});
 
   Map<String, dynamic> toMap() {
     return {

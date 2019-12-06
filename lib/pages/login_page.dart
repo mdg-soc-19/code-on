@@ -13,6 +13,7 @@ class _LoginPageState extends State<LoginPage> {
   String _status = 'no-action';
   final usernamecontroller = TextEditingController();
   final passwordcontroller = TextEditingController();
+  AuthService _auth = AuthService();
 
   @override
   void dispose() {
@@ -44,12 +45,11 @@ class _LoginPageState extends State<LoginPage> {
                 setState(() {
                   _status = 'loading';
                 });
-                appAuth
-                    .login(usernamecontroller.text, passwordcontroller.text)
+                _auth
+                    .signInWithEmailAndPassword(
+                        usernamecontroller.text, passwordcontroller.text)
                     .then((result) {
                   if (result) {
-                    Navigator.of(context).pushReplacementNamed('/home');
-                    // dispose();
                   } else {
                     setState(() {
                       _status = 'rejected';
@@ -61,17 +61,11 @@ class _LoginPageState extends State<LoginPage> {
             RaisedButton(
               child: Text('Register and Login'),
               onPressed: () {
-                appAuth.register(
+                dynamic result = _auth.registerWithEmailAndPassword(
                     usernamecontroller.text, passwordcontroller.text);
-                appAuth
-                    .login(usernamecontroller.text, passwordcontroller.text)
-                    .then((result) {
-                  if (result) {
-                    Navigator.of(context).pushReplacementNamed('/home');
-                  } else {
-                    print('Failed to login.');
-                  }
-                });
+                if (result == null) {
+                  print('Error');
+                }
               },
             ),
             RaisedButton(

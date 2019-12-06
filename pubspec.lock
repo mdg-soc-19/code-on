@@ -81,13 +81,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  json_annotation:
-    dependency: "direct main"
-    description:
-      name: json_annotation
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.4.0"
   matcher:
     dependency: transitive
     description:
@@ -109,13 +102,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.4"
-  path_provider:
-    dependency: "direct main"
-    description:
-      name: path_provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.5"
   pedantic:
     dependency: transitive
     description:
@@ -123,13 +109,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0+1"
-  platform:
-    dependency: transitive
+  provider:
+    dependency: "direct main"
     description:
-      name: platform
+      name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "3.2.0"
   quiver:
     dependency: transitive
     description:

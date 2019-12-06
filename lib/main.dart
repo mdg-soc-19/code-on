@@ -1,24 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'package:code_on/utility/authorization.dart';
+import 'package:code_on/utility/auth.dart';
+import 'package:code_on/models/user.dart';
 import 'package:code_on/pages/login_page.dart';
 import 'package:code_on/pages/home_page.dart';
 
-AuthService appAuth = AuthService();
+void main() => runApp(MyApp());
 
-void main() async {
-  Widget _defaultHome = LoginPage();
-
-  bool _result = await appAuth.defaultLogin();
-  if (_result) {
-    _defaultHome = HomePage();
+class Wrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<User>(context);
+    print(user);
+    if (user == null) {
+      return LoginPage();
+    } else {
+      return HomePage();
+    }
   }
-  runApp(MaterialApp(
-    title: 'App',
-    home: _defaultHome,
-    routes: <String, WidgetBuilder>{
-      '/home': (BuildContext context) => HomePage(),
-      '/login': (BuildContext context) => LoginPage()
-    },
-  ));
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<User>.value(
+      value: AuthService().user,
+      child: MaterialApp(
+        home: Wrapper(),
+      ),
+    );
+  }
 }

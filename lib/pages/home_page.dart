@@ -1,7 +1,9 @@
 import 'package:code_on/main.dart';
+import 'package:code_on/utility/auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+  AuthService _auth= AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,8 +18,7 @@ class HomePage extends StatelessWidget {
             Text('Welcome to App!'),
             RaisedButton(
               onPressed: () {
-                appAuth.logout().then((_) =>
-                    Navigator.of(context).pushReplacementNamed('/login'));
+                _auth.signOut();
               },
               child: Text('LogOut'),
             )
