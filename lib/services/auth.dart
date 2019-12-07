@@ -1,3 +1,4 @@
+import 'package:code_on/services/database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:code_on/models/user.dart';
