@@ -16,7 +16,9 @@ class ApiService {
         ComplexUserData.fromJson(json.decode(jsonResponse.body));
     List<String> problems = new List();
     for (var r in u1.result) {
-      problems.add((r.problem.contestId.toString() + r.problem.index));
+      if (r.verdict == Status.OK) {
+        problems.add((r.problem.contestId.toString() + r.problem.index));
+      }
     }
     _dataBase.updateData(user.username, problems);
     return true;
