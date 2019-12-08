@@ -1,16 +1,13 @@
 # code_on
 
-A new Flutter project.
+A Flutter project that supliments CodeForces by providing a recommendation system.
 
-## Getting Started
+## Curent Progress
 
-This project is a starting point for a Flutter application.
+Complete :-
+ - Authentication.
+ - Firestore for problems.
 
-A few resources to get you started if this is your first Flutter project:
+Under Progress:-
+ - Cloud Functions to generate recommendations.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
