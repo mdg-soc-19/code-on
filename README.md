@@ -1,13 +1,14 @@
-# code_on
+# Code On
 
 A Flutter project that supliments CodeForces by providing a recommendation system.
 
 ## Curent Progress
 
 Complete :-
- - Authentication.
- - Firestore for problems.
+
+- Authentication.
+- Firestore for problems.
 
 Under Progress:-
- - Cloud Functions to generate recommendations.
 
+- Cloud Functions to generate recommendations.

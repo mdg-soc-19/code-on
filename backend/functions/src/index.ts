@@ -4,62 +4,68 @@ import * as admin from "firebase-admin";
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const generateRecommendation = functions.https.onRequest(
+export const itemitemCollaborativeFiltering = functions.https.onRequest(
   async (request, response) => {
     admin.initializeApp();
     const uid = request.query.uid;
     console.log("Query is made by :- " + uid);
+    const userSnapshot = await admin
+      .firestore()
+      .doc("userData/" + uid)
+      .get();
+    const user: String = userSnapshot.get("username");
 
-    // //Getting userData from firestore.
-    // const userDataSnapshot = await admin
-    //   .firestore()
-    //   .collectionGroup("userData")
-    //   .get();
-    // const userList: String[] = [];
-    // const userData: String[][] = [];
-    // userDataSnapshot.forEach(doc => {
-    //   userList.push(doc.get("username"));
-    //   userData.push(doc.get("arrayOfProblems"));
-    // });
+    //Getting userData from firestore.
+    const userDataSnapshot = await admin
+      .firestore()
+      .collectionGroup("userData")
+      .get();
+    const userList: String[] = [];
+    const userData: String[][] = [];
+    userDataSnapshot.forEach(doc => {
+      userList.push(doc.get("username"));
+      userData.push(doc.get("arrayOfProblems"));
+    });
 
-    // //Getting problemSet from  firestore.
-    // const problemSetSnapshot = await admin
-    //   .firestore()
-    //   .collection("problemSet")
-    //   .doc("current")
-    //   .get();
-    // let problemSet: String[] = [];
-    // problemSet = problemSetSnapshot.get("arrayOfProblems");
+    //Getting problemSet from  firestore.
+    const problemSetSnapshot = await admin
+      .firestore()
+      .collection("problemSet")
+      .doc("current")
+      .get();
+    let problemSet: String[] = [];
+    problemSet = problemSetSnapshot.get("arrayOfProblems");
 
-    //Generating fake raw data for testing.
-    const userList: String[] = ["a", "b", "c", "d", "e"];
-    const userData: String[][] = [
-      ["1A", "1B", "1C", "1D"],
-      ["1A", "1B", "1D"],
-      ["2A", "2B", "2C", "4A", "4B"],
-      ["3A", "3B"],
-      ["1A", "2A", "3A"]
-    ];
-    const problemSet: String[] = [
-      "1A",
-      "1B",
-      "1C",
-      "1D",
-      "2A",
-      "2B",
-      "2C",
-      "3A",
-      "3B",
-      "4A",
-      "4B",
-      "4C",
-      "4D"
-    ];
+    // //Generating fake raw data for testing.
+    // const userList: String[] = ["a", "b", "c", "d", "e"];
+    // const userData: String[][] = [
+    //   ["1A", "1B", "1C", "1D"],
+    //   ["1A", "1B", "1D"],
+    //   ["2A", "2B", "2C", "4A", "4B"],
+    //   ["3A", "3B"],
+    //   ["1A", "2A", "3A"]
+    // ];
+    // const problemSet: String[] = [
+    //   "1A",
+    //   "1B",
+    //   "1C",
+    //   "1D",
+    //   "2A",
+    //   "2B",
+    //   "2C",
+    //   "3A",
+    //   "3B",
+    //   "4A",
+    //   "4B",
+    //   "4C",
+    //   "4D"
+    // ];
 
     //Logging the raw info.
     console.log(problemSet);
     console.log(userData);
     console.log(userList);
+    console.log(user);
 
     //Generating and Normalizing dataset.
     const dataset: number[][] = [];
@@ -111,7 +117,7 @@ export const generateRecommendation = functions.https.onRequest(
       let prsum: number = 0;
       let sum: number = 0;
       for (let j = 0; j < problemSet.length; j++) {
-        prsum += dataset[1][j] * iimat[i][j];
+        prsum += dataset[userList.indexOf(user)][j] * iimat[i][j];
         sum += iimat[i][j];
       }
       if (sum == 0) {
@@ -125,27 +131,6 @@ export const generateRecommendation = functions.https.onRequest(
     console.log(dataset);
     console.log(iimat);
     console.log(recommendations);
-    //Function for user correlation score.
-    // let correlation = function(dataSet: String[][], u1: String, u2: String) {
-    //   let commonData: String[] = [];
-    //   let datau1 = dataSet[userList.indexOf(u1)];
-    //   let datau2 = dataSet[userList.indexOf(u2)];
-    //   for (let i = 0; i < datau1.length; i++) {
-    //     if (datau2.indexOf(datau1[i]) != -1) {
-    //       commonData.push(datau1[i]);
-    //     }
-    //   }
-    //   const score: number =
-    //     (commonData.length * commonData.length) /
-    //     (datau1.length * datau2.length);
-    //   return score;
-    // };
-
-    // const res: number = correlation(
-    //   userData,
-    //   "manasvipatidar",
-    //   "manasvipatidar"
-    // );
 
     response.send(recommendations);
   }
