@@ -25,9 +25,10 @@ class HomePage extends StatelessWidget {
               onChanged: (val) => user.setUserName(val),
             ),
             RaisedButton(
-              child: Text('Username'),
+              child: Text('Update Username'),
               onPressed: () async {
                 final ApiService _api = ApiService();
+                await _api.fetchProblemset();
                 _api.fetchData(user);
               },
             ),
