@@ -156,7 +156,7 @@ class _RegisterState extends State<RegisterPage> {
                             )),
                       )),
                   SizedBox(
-                    height: 100,
+                    height: 60,
                   ),
                   FadeAnimation(
                       2,
