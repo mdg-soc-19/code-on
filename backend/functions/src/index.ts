@@ -159,14 +159,16 @@ export const collaborativeFiltering = functions.https.onRequest(
 
     //Generating recommendations for User Based Collaborative Filtering
     const recommendationsU: number[] = [];
+    let sum: number = 0;
+    for (let i = 0; i < problemSet.length; i++) {
+      sum += uumat[userIndex][i];
+    }
     for (let i = 0; i < problemSet.length; i++) {
       let psum: number = 0;
-      // let sum: number = 0;
       for (let j = 0; j < userList.length; j++) {
         psum += dataset[j][i] * uumat[userIndex][j];
       }
-
-      recommendationsU[i] = psum;
+      recommendationsU[i] = psum / sum;
     }
 
     //Logging results.
