@@ -158,22 +158,24 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(50),
                         color: Color.fromRGBO(49, 39, 79, 1),
                       ),
-                      child: Center(
-                          child: FlatButton(
-                        child: Text(
-                          "Login",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () async {
-                          if (_formkey.currentState.validate()) {
-                            dynamic result = await _auth
-                                .signInWithEmailAndPassword(_email, _password);
-                            if (result == null) {
-                              print('Error');
+                      child: SizedBox.expand(
+                        child: FlatButton(
+                          child: Text(
+                            "Login",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () async {
+                            if (_formkey.currentState.validate()) {
+                              dynamic result =
+                                  await _auth.signInWithEmailAndPassword(
+                                      _email, _password);
+                              if (result == null) {
+                                print('Error');
+                              }
                             }
-                          }
-                        },
-                      )),
+                          },
+                        ),
+                      ),
                     )),
                 SizedBox(
                   height: 30,
