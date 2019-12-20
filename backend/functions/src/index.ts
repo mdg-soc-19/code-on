@@ -1,10 +1,7 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-
-export const itemitemCollaborativeFiltering = functions.https.onRequest(
+export const collaborativeFiltering = functions.https.onRequest(
   async (request, response) => {
     admin.initializeApp();
     const uid = request.query.uid;
@@ -73,15 +70,17 @@ export const itemitemCollaborativeFiltering = functions.https.onRequest(
       dataset[i] = [];
       const normalizedIndex = 1 / userData[i].length;
       for (let j = 0; j < problemSet.length; j++) {
-        if (userData[i].indexOf(problemSet[j]) != -1) {
+        if (userData[i].indexOf(problemSet[j]) !== -1) {
           dataset[i][j] = normalizedIndex;
         } else {
           dataset[i][j] = 0;
         }
       }
     }
+    const userIndex: number = userList.indexOf(user);
 
-    //Generating the  item-item matrix.
+    //#################################Item Based Collaborative Filtering#################################
+    //Generating the item-similarity matrix.
     const iimat: number[][] = [];
     for (let i = 0; i < problemSet.length; i++) {
       iimat[i] = [];
@@ -96,10 +95,10 @@ export const itemitemCollaborativeFiltering = functions.https.onRequest(
           sqsumi += dataset[k][i] * dataset[k][i];
           sqsumj += dataset[k][j] * dataset[k][j];
         }
-        if (sumproduct == 0) {
+        if (sumproduct === 0) {
           iimat[i][j] = 0;
           iimat[j][i] = 0;
-        } else if (sqsumi == 0 || sqsumj == 0) {
+        } else if (sqsumi === 0 || sqsumj === 0) {
           iimat[i][j] = 0;
           iimat[j][i] = 0;
         } else {
@@ -111,27 +110,73 @@ export const itemitemCollaborativeFiltering = functions.https.onRequest(
       }
     }
 
-    //Generating user recommendations
-    const recommendations: number[] = [];
+    // Generating recommendations for Item Based Collaborative Filtering
+    const recommendationsI: number[] = [];
     for (let i = 0; i < problemSet.length; i++) {
       let prsum: number = 0;
       let sum: number = 0;
       for (let j = 0; j < problemSet.length; j++) {
-        prsum += dataset[userList.indexOf(user)][j] * iimat[i][j];
+        prsum += dataset[userIndex][j] * iimat[i][j];
         sum += iimat[i][j];
       }
       if (sum == 0) {
-        recommendations[i] = 0;
+        recommendationsI[i] = 0;
       } else {
-        recommendations[i] = prsum / sum;
+        recommendationsI[i] = prsum / sum;
       }
+    }
+
+    //#################################User Based Collaborative Filtering#################################
+    //Generating the user-similarity matrix.
+    const uumat: number[][] = [];
+    for (let i = 0; i < problemSet.length; i++) {
+      uumat[i] = [];
+    }
+    for (let i = 0; i < userList.length; i++) {
+      for (let j = i; j < userList.length; j++) {
+        let sumproduct: number = 0;
+        let sqsumi: number = 0;
+        let sqsumj: number = 0;
+        for (let k = 0; k < problemSet.length; k++) {
+          sumproduct += dataset[i][k] * dataset[j][k];
+          sqsumi += dataset[i][k] * dataset[i][k];
+          sqsumj += dataset[j][k] * dataset[j][k];
+        }
+        if (sumproduct === 0) {
+          uumat[i][j] = 0;
+          uumat[j][i] = 0;
+        } else if (sqsumi === 0 || sqsumj === 0) {
+          uumat[i][j] = 0;
+          uumat[j][i] = 0;
+        } else {
+          const sqrsqsumi = Math.sqrt(sqsumi);
+          const sqrsqsumj = Math.sqrt(sqsumj);
+          uumat[i][j] = sumproduct / (sqrsqsumi * sqrsqsumj);
+          uumat[j][i] = sumproduct / (sqrsqsumi * sqrsqsumj);
+        }
+      }
+    }
+
+    //Generating recommendations for User Based Collaborative Filtering
+    const recommendationsU: number[] = [];
+    let sum: number = 0;
+    for (let i = 0; i < problemSet.length; i++) {
+      sum += uumat[userIndex][i];
+    }
+    for (let i = 0; i < problemSet.length; i++) {
+      let psum: number = 0;
+      for (let j = 0; j < userList.length; j++) {
+        psum += dataset[j][i] * uumat[userIndex][j];
+      }
+      recommendationsU[i] = psum / sum;
     }
 
     //Logging results.
     console.log(dataset);
     console.log(iimat);
-    console.log(recommendations);
+    console.log(recommendationsI);
+    console.log(recommendationsU);
 
-    response.send(recommendations);
+    response.send([recommendationsI, recommendationsU]);
   }
 );

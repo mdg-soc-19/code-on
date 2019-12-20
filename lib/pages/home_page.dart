@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:code_on/models/user.dart';
 import 'package:code_on/services/api.dart';
-import 'package:code_on/services/database.dart';
 import 'package:code_on/services/auth.dart';
 
 class HomePage extends StatelessWidget {

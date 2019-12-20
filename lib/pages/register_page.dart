@@ -168,8 +168,8 @@ class _RegisterState extends State<RegisterPage> {
                               Color.fromRGBO(143, 148, 251, 1),
                               Color.fromRGBO(143, 148, 251, .65),
                             ])),
-                        child: Center(
-                            child: FlatButton(
+                        child:SizedBox.expand(
+                          child: FlatButton(
                           child: Text(
                             "Register",
                             style: TextStyle(
@@ -186,7 +186,8 @@ class _RegisterState extends State<RegisterPage> {
                               }
                             }
                           },
-                        )),
+                        )
+                        ),
                       )),
                   SizedBox(
                     height: 70,
