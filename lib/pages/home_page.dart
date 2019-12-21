@@ -43,3 +43,23 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+// class HomePage extends StatefulWidget {
+//   final User user;
+//   HomePage({this.user});
+//   @override
+//   _HomePageState createState() => _HomePageState();
+// }
+
+// class _HomePageState extends State<HomePage> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     final User user = widget.user;
+//     final AuthService _auth = AuthService();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }
