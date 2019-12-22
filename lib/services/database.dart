@@ -11,6 +11,12 @@ class DatabaseService {
   final CollectionReference problemSet =
       Firestore.instance.collection('problemSet');
 
+  //Check for userData.
+  Future<bool> checkUserData() async {
+    DocumentSnapshot result = await userData.document(uid).get();
+    return result.exists;
+  }
+
   //Updates userData
   Future updateData(String username, List problems) async {
     return await userData.document(uid).setData({

@@ -2,13 +2,11 @@ import 'package:code_on/models/user.dart';
 import 'package:code_on/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:provider/provider.dart';
 import 'package:rect_getter/rect_getter.dart';
 
 import 'package:code_on/services/auth.dart';
 import 'package:code_on/animations/fade_animations.dart';
-
-GlobalKey rectGetterKey = RectGetter.createGlobalKey();
-Rect rect;
 
 class LoginPage extends StatefulWidget {
   final Function toggleView;
@@ -24,20 +22,12 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final AuthService _auth = AuthService();
   final _formkey = GlobalKey<FormState>();
-  // GlobalKey rectGetterKey = RectGetter.createGlobalKey();
-  // Rect rect;
-  @override
-  void initState() {
-    super.initState();
-    User _user = widget.getUser();
-    print(_user);
-    if (_user != null) {
-      _navigate(user: _user);
-    }
-  }
+  GlobalKey rectGetterKey = RectGetter.createGlobalKey();
+  Rect rect;
 
   String _email = '';
   String _password = '';
+
   Widget _ripple() {
     if (rect == null) {
       return Container();
@@ -64,19 +54,21 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Stack(children: <Widget>[
       Scaffold(
         backgroundColor: Colors.white,
         body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-              height: 400,
+              height: height / 2,
+              width: width,
               child: Stack(
                 children: <Widget>[
                   Positioned(
-                    top: -40,
-                    height: 400,
+                    top: -45,
+                    height: height / 2,
                     width: width,
                     child: FadeAnimation(
                         1,
@@ -89,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                         )),
                   ),
                   Positioned(
-                    height: 400,
+                    height: height / 2,
                     width: width + 20,
                     child: FadeAnimation(
                         1.3,
@@ -104,157 +96,172 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 40),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  FadeAnimation(
-                      1.5,
-                      Text(
-                        "Login",
-                        style: TextStyle(
-                            color: Color.fromRGBO(49, 39, 79, 1),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30),
-                      )),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  FadeAnimation(
-                      1.7,
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color.fromRGBO(196, 135, 198, .3),
-                                blurRadius: 20,
-                                offset: Offset(0, 10),
-                              )
-                            ]),
-                        child: Form(
-                          key: _formkey,
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                        bottom: BorderSide(
-                                            color: Colors.grey[200]))),
-                                child: TextFormField(
-                                  validator: (val) => val.isEmpty
-                                      ? 'Enter a valid email ID'
-                                      : null,
-                                  onChanged: (val) {
-                                    setState(() => _email = val);
-                                  },
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Email ID",
-                                      hintStyle: TextStyle(color: Colors.grey)),
-                                ),
+            Container(
+              height: height / 2,
+              width: width,
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      FadeAnimation(
+                          1.5,
+                          Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Color.fromRGBO(49, 39, 79, 1),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 30),
+                          )),
+                      SizedBox(
+                        height: 30,
+                        width: width,
+                      ),
+                      FadeAnimation(
+                          1.7,
+                          Container(
+                            width: 9 * width / 10,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Color.fromRGBO(196, 135, 198, .3),
+                                    blurRadius: 20,
+                                    offset: Offset(0, 10),
+                                  )
+                                ]),
+                            child: Form(
+                              key: _formkey,
+                              child: Column(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    width: width,
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: Colors.grey[200]))),
+                                    child: TextFormField(
+                                      validator: (val) => val.isEmpty
+                                          ? 'Enter a valid email ID'
+                                          : null,
+                                      onChanged: (val) {
+                                        setState(() => _email = val);
+                                      },
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Email ID",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey)),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    child: TextFormField(
+                                      validator: (val) => val.length < 6
+                                          ? 'Enter a password 6 chars or longer'
+                                          : null,
+                                      onChanged: (val) {
+                                        setState(() => _password = val);
+                                      },
+                                      obscureText: true,
+                                      decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Password",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey)),
+                                    ),
+                                  )
+                                ],
                               ),
-                              Container(
-                                padding: EdgeInsets.all(10),
-                                child: TextFormField(
-                                  validator: (val) => val.length < 6
-                                      ? 'Enter a password 6 chars or longer'
-                                      : null,
-                                  onChanged: (val) {
-                                    setState(() => _password = val);
-                                  },
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      hintText: "Password",
-                                      hintStyle: TextStyle(color: Colors.grey)),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      )),
-                  SizedBox(
-                    height: 20,
+                            ),
+                          )),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      FadeAnimation(
+                          1.7,
+                          Center(
+                              child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                                color: Color.fromRGBO(196, 135, 198, 1)),
+                          ))),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      FadeAnimation(
+                          1.9,
+                          // Container(
+                          //   height: 50,
+                          //   margin: EdgeInsets.symmetric(horizontal: 60),
+                          //   decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(50),
+                          //     color: Color.fromRGBO(49, 39, 79, 1),
+                          //   ),
+                          //   child: SizedBox.expand(
+                          //     child: RectGetter(
+                          //       key: rectGetterKey,
+                          //       child: FlatButton(
+                          //         child: Text(
+                          //           "Login",
+                          //           style: TextStyle(color: Colors.white),
+                          //         ),
+                          //         onPressed: () async {
+                          //           if (_formkey.currentState.validate()) {
+                          //             setState(() {
+                          //               rect = RectGetter.getRectFromKey(
+                          //                   rectGetterKey);
+                          //             });
+                          //             // WidgetsBinding.instance
+                          //             //     .addPostFrameCallback((_) {
+                          //             //   setState(() {
+                          //             //     rect = rect.inflate(1.3 *
+                          //             //         MediaQuery.of(context)
+                          //             //             .size
+                          //             //             .longestSide);
+                          //             //   });
+                          //             // });
+                          //             dynamic result =
+                          //                 await _auth.signInWithEmailAndPassword(
+                          //                     _email, _password);
+                          //             if (result == null) {
+                          //               print('Error');
+                          //             }
+                          //           }
+                          //         },
+                          //       ),
+                          //     ),
+                          //   ),
+                          // )
+                          RectGetter(
+                            key: rectGetterKey,
+                            child: ProgressButton(
+                              onPressed: _onPress,
+                              validate: _validate,
+                              postLogin: _postLogin,
+                            ),
+                          )),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      FadeAnimation(
+                          2,
+                          Center(
+                              child: FlatButton(
+                            child: Text(
+                              "Create Account",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(49, 39, 79, .6)),
+                            ),
+                            onPressed: () => widget.toggleView(),
+                          ))),
+                    ],
                   ),
-                  FadeAnimation(
-                      1.7,
-                      Center(
-                          child: Text(
-                        "Forgot Password?",
-                        style:
-                            TextStyle(color: Color.fromRGBO(196, 135, 198, 1)),
-                      ))),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  FadeAnimation(
-                      1.9,
-                      // Container(
-                      //   height: 50,
-                      //   margin: EdgeInsets.symmetric(horizontal: 60),
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(50),
-                      //     color: Color.fromRGBO(49, 39, 79, 1),
-                      //   ),
-                      //   child: SizedBox.expand(
-                      //     child: RectGetter(
-                      //       key: rectGetterKey,
-                      //       child: FlatButton(
-                      //         child: Text(
-                      //           "Login",
-                      //           style: TextStyle(color: Colors.white),
-                      //         ),
-                      //         onPressed: () async {
-                      //           if (_formkey.currentState.validate()) {
-                      //             setState(() {
-                      //               rect = RectGetter.getRectFromKey(
-                      //                   rectGetterKey);
-                      //             });
-                      //             // WidgetsBinding.instance
-                      //             //     .addPostFrameCallback((_) {
-                      //             //   setState(() {
-                      //             //     rect = rect.inflate(1.3 *
-                      //             //         MediaQuery.of(context)
-                      //             //             .size
-                      //             //             .longestSide);
-                      //             //   });
-                      //             // });
-                      //             dynamic result =
-                      //                 await _auth.signInWithEmailAndPassword(
-                      //                     _email, _password);
-                      //             if (result == null) {
-                      //               print('Error');
-                      //             }
-                      //           }
-                      //         },
-                      //       ),
-                      //     ),
-                      //   ),
-                      // )
-                      ProgressButton(
-                        onPressed: _onPress,
-                        validate: _validate,
-                        postLogin: _postLogin,
-                      )),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  FadeAnimation(
-                      2,
-                      Center(
-                          child: FlatButton(
-                        child: Text(
-                          "Create Account",
-                          style:
-                              TextStyle(color: Color.fromRGBO(49, 39, 79, .6)),
-                        ),
-                        onPressed: () => widget.toggleView(),
-                      ))),
-                ],
+                ),
               ),
             )
           ],
@@ -262,6 +269,14 @@ class _LoginPageState extends State<LoginPage> {
       ),
       _ripple()
     ]);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    User _user = Provider.of<User>(context);
+    print(_user.toString() + '@LoginPage');
+    // _postLogin();
   }
 
   bool _validate() {
@@ -297,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _navigate({User user}) {
-    print(user.uid);
+    print(user.uid + '@_navigate');
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => HomePage(user: user)));
   }
@@ -319,15 +334,13 @@ class _ProgressButtonState extends State<ProgressButton>
     with TickerProviderStateMixin {
   bool _status = false;
   int _state = 0;
-  double _width = double.infinity;
+  double _width = 200.0;
   Animation _animation;
-  GlobalKey _globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        key: _globalKey,
         height: 48.0,
         width: _width,
         decoration: BoxDecoration(
@@ -343,10 +356,9 @@ class _ProgressButtonState extends State<ProgressButton>
                     borderRadius: BorderRadius.circular(50.0)),
             padding: EdgeInsets.all(00.0),
             color: _state == 2 ? Colors.blue : Color.fromRGBO(49, 39, 79, 1),
-            child:
-                RectGetter(key: rectGetterKey, child: buildBuildButtonChild()),
+            child: buildBuildButtonChild(),
             onPressed: () {},
-            onHighlightChanged: (isPressed) {
+            onHighlightChanged: (_) {
               if (_state == 0) {
                 if (widget.validate()) {
                   login();
@@ -377,13 +389,12 @@ class _ProgressButtonState extends State<ProgressButton>
   }
 
   void login() async {
-    double initialWidth = _globalKey.currentContext.size.width;
     var controller =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
     _animation = Tween(begin: 0.0, end: 1.0).animate(controller)
       ..addListener(() {
         setState(() {
-          _width = initialWidth - ((initialWidth - 48.0) * _animation.value);
+          _width = 200 - ((200 - 48.0) * _animation.value);
         });
       });
     controller.forward();

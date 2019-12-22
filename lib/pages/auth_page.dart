@@ -14,7 +14,6 @@ class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
   User _user;
   void _toggleView() {
-    //print(showSignIn.toString());
     setState(() => showSignIn = !showSignIn);
   }
 
@@ -25,6 +24,7 @@ class _AuthenticateState extends State<Authenticate> {
   @override
   Widget build(BuildContext context) {
     _user = Provider.of<User>(context);
+    print(_user.toString() + '@Authenticate');
     if (showSignIn) {
       return LoginPage(
         toggleView: _toggleView,
