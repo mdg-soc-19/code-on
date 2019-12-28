@@ -33,7 +33,7 @@ class Result {
   int contestId;
   int creationTimeSeconds;
   int relativeTimeSeconds;
-  Problem problem;
+  UserProblem problem;
   Author author;
   ProgrammingLanguage programmingLanguage;
   Status verdict;
@@ -62,7 +62,7 @@ class Result {
         contestId: json["contestId"],
         creationTimeSeconds: json["creationTimeSeconds"],
         relativeTimeSeconds: json["relativeTimeSeconds"],
-        problem: Problem.fromJson(json["problem"]),
+        problem: UserProblem.fromJson(json["problem"]),
         author: Author.fromJson(json["author"]),
         programmingLanguage:
             programmingLanguageValues.map[json["programmingLanguage"]],
@@ -154,7 +154,7 @@ final participantTypeValues = EnumValues({
   "PRACTICE": ParticipantType.PRACTICE
 });
 
-class Problem {
+class UserProblem {
   int contestId;
   String index;
   String name;
@@ -163,7 +163,7 @@ class Problem {
   int rating;
   List<String> tags;
 
-  Problem({
+  UserProblem({
     this.contestId,
     this.index,
     this.name,
@@ -173,7 +173,7 @@ class Problem {
     this.tags,
   });
 
-  factory Problem.fromJson(Map<String, dynamic> json) => Problem(
+  factory UserProblem.fromJson(Map<String, dynamic> json) => UserProblem(
         contestId: json["contestId"],
         index: json["index"],
         name: json["name"],

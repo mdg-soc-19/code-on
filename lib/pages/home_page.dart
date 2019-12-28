@@ -1,109 +1,50 @@
 import 'package:code_on/pages/auth_page.dart';
-import 'package:code_on/services/database.dart';
+import 'package:code_on/pages/result_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/animation.dart';
 
+import 'package:code_on/pages/username_page.dart';
 import 'package:code_on/models/user.dart';
 import 'package:code_on/services/api.dart';
 import 'package:code_on/services/auth.dart';
-import 'package:provider/provider.dart';
 
-// class HomePage extends StatelessWidget {
-//   final User user;
-//   HomePage({this.user});
-//   final AuthService _auth = AuthService();
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('HomePage'),
-//       ),
-//       body: Container(
-//         margin: EdgeInsets.all(16.0),
-//         alignment: Alignment.center,
-//         child: Column(
-//           children: <Widget>[
-//             Text('Welcome to App!'),
-//             TextFormField(
-//               onChanged: (val) => user.setUserName(val),
-//             ),
-//             RaisedButton(
-//               child: Text('Update Username'),
-//               onPressed: () async {
-//                 final ApiService _api = ApiService();
-//                 await _api.fetchProblemset();
-//                 _api.fetchData(user);
-//               },
-//             ),
-//             RaisedButton(
-//               onPressed: () {
-//                 _auth.signOut();
-//               },
-//               child: Text('LogOut'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 class HomePage extends StatefulWidget {
   final User user;
-  HomePage({this.user});
+  final bool hasUsername;
+  HomePage({@required this.user, @required this.hasUsername});
   @override
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+  @override
+  void initState() {
+    super.initState();
+    print('initState @ HomePage');
+    _controller =
+        AnimationController(duration: const Duration(seconds: 4), vsync: this);
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('build @ HomePage');
     User _user = widget.user;
-    ApiService _api = ApiService();
-    AuthService _auth = AuthService();
-    DatabaseService _dataBase = DatabaseService(uid: _user.uid);
-    return FutureBuilder(
-      future: _dataBase.checkUserData(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return snapshot.data
-              ? Scaffold(
-                  backgroundColor: Colors.blue,
-                  body: Container(
-                    margin: EdgeInsets.all(16.0),
-                    alignment: Alignment.center,
-                    child: Column(
-                      children: <Widget>[
-                        Text('Welcome to App!'),
-                        TextFormField(
-                          onChanged: (val) => _user.setUserName(val),
-                        ),
-                        RaisedButton(
-                          child: Text('Update Username'),
-                          onPressed: () async {
-                            await _api.fetchProblemset();
-                            _api.fetchData(_user);
-                          },
-                        ),
-                        RaisedButton(
-                          onPressed: () {
-                            _auth.signOut();
-                          },
-                          child: Text('LogOut'),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
-              : Container(
-                  color: Colors.red,
-                );
-        } else if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container(color: Colors.green);
-        } else {
-          return Container(
-            color: Colors.purple,
+    return widget.hasUsername
+        ? ResultPage(
+            user: _user,
+          )
+        : UsernamePage(
+            user: _user,
+            controller: _controller,
           );
-        }
-      },
-    );
   }
 }

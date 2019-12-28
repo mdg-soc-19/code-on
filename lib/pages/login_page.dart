@@ -1,10 +1,10 @@
-import 'package:code_on/models/user.dart';
-import 'package:code_on/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'package:rect_getter/rect_getter.dart';
 
+import 'package:code_on/models/user.dart';
+import 'package:code_on/pages/home_page.dart';
+import 'package:code_on/services/database.dart';
 import 'package:code_on/services/auth.dart';
 import 'package:code_on/animations/fade_animations.dart';
 
@@ -44,7 +44,10 @@ class _LoginPageState extends State<LoginPage> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(150),
-              color: Colors.blue,
+              gradient: LinearGradient(
+                  colors: [Colors.indigo, Colors.indigo[100]],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight),
             ),
             height: 48.0,
           ));
@@ -58,225 +61,176 @@ class _LoginPageState extends State<LoginPage> {
     return Stack(children: <Widget>[
       Scaffold(
         backgroundColor: Colors.white,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              height: height / 2,
-              width: width,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                    top: -45,
-                    height: height / 2,
-                    width: width,
-                    child: FadeAnimation(
-                        1,
-                        Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/background-1.png'),
-                                  fit: BoxFit.fill)),
-                        )),
-                  ),
-                  Positioned(
-                    height: height / 2,
-                    width: width + 20,
-                    child: FadeAnimation(
-                        1.3,
-                        Container(
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'assets/images/background-2.png'),
-                                  fit: BoxFit.fill)),
-                        )),
-                  )
-                ],
-              ),
-            ),
-            Container(
-              height: height / 2,
-              width: width,
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      FadeAnimation(
-                          1.5,
-                          Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Color.fromRGBO(49, 39, 79, 1),
-                                fontWeight: FontWeight.bold,
-                                fontSize: 30),
-                          )),
-                      SizedBox(
-                        height: 30,
-                        width: width,
-                      ),
-                      FadeAnimation(
-                          1.7,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: height / 2,
+                width: width,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      top: -45,
+                      height: height / 2,
+                      width: width,
+                      child: FadeAnimation(
+                          1,
                           Container(
-                            width: 9 * width / 10,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color.fromRGBO(196, 135, 198, .3),
-                                    blurRadius: 20,
-                                    offset: Offset(0, 10),
-                                  )
-                                ]),
-                            child: Form(
-                              key: _formkey,
-                              child: Column(
-                                children: <Widget>[
-                                  Container(
-                                    padding: EdgeInsets.all(10),
-                                    width: width,
-                                    decoration: BoxDecoration(
-                                        border: Border(
-                                            bottom: BorderSide(
-                                                color: Colors.grey[200]))),
-                                    child: TextFormField(
-                                      validator: (val) => val.isEmpty
-                                          ? 'Enter a valid email ID'
-                                          : null,
-                                      onChanged: (val) {
-                                        setState(() => _email = val);
-                                      },
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "Email ID",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey)),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: TextFormField(
-                                      validator: (val) => val.length < 6
-                                          ? 'Enter a password 6 chars or longer'
-                                          : null,
-                                      onChanged: (val) {
-                                        setState(() => _password = val);
-                                      },
-                                      obscureText: true,
-                                      decoration: InputDecoration(
-                                          border: InputBorder.none,
-                                          hintText: "Password",
-                                          hintStyle:
-                                              TextStyle(color: Colors.grey)),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/background-1.png'),
+                                    fit: BoxFit.fill)),
                           )),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      FadeAnimation(
-                          1.7,
-                          Center(
-                              child: Text(
-                            "Forgot Password?",
-                            style: TextStyle(
-                                color: Color.fromRGBO(196, 135, 198, 1)),
-                          ))),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      FadeAnimation(
-                          1.9,
-                          // Container(
-                          //   height: 50,
-                          //   margin: EdgeInsets.symmetric(horizontal: 60),
-                          //   decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(50),
-                          //     color: Color.fromRGBO(49, 39, 79, 1),
-                          //   ),
-                          //   child: SizedBox.expand(
-                          //     child: RectGetter(
-                          //       key: rectGetterKey,
-                          //       child: FlatButton(
-                          //         child: Text(
-                          //           "Login",
-                          //           style: TextStyle(color: Colors.white),
-                          //         ),
-                          //         onPressed: () async {
-                          //           if (_formkey.currentState.validate()) {
-                          //             setState(() {
-                          //               rect = RectGetter.getRectFromKey(
-                          //                   rectGetterKey);
-                          //             });
-                          //             // WidgetsBinding.instance
-                          //             //     .addPostFrameCallback((_) {
-                          //             //   setState(() {
-                          //             //     rect = rect.inflate(1.3 *
-                          //             //         MediaQuery.of(context)
-                          //             //             .size
-                          //             //             .longestSide);
-                          //             //   });
-                          //             // });
-                          //             dynamic result =
-                          //                 await _auth.signInWithEmailAndPassword(
-                          //                     _email, _password);
-                          //             if (result == null) {
-                          //               print('Error');
-                          //             }
-                          //           }
-                          //         },
-                          //       ),
-                          //     ),
-                          //   ),
-                          // )
-                          RectGetter(
-                            key: rectGetterKey,
-                            child: ProgressButton(
-                              onPressed: _onPress,
-                              validate: _validate,
-                              postLogin: _postLogin,
-                            ),
+                    ),
+                    Positioned(
+                      height: height / 2,
+                      width: width + 20,
+                      child: FadeAnimation(
+                          1.3,
+                          Container(
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/images/background-2.png'),
+                                    fit: BoxFit.fill)),
                           )),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      FadeAnimation(
-                          2,
-                          Center(
-                              child: FlatButton(
-                            child: Text(
-                              "Create Account",
-                              style: TextStyle(
-                                  color: Color.fromRGBO(49, 39, 79, .6)),
-                            ),
-                            onPressed: () => widget.toggleView(),
-                          ))),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
               ),
-            )
-          ],
+              Container(
+                height: height / 2,
+                width: width,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 0.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        FadeAnimation(
+                            1.5,
+                            Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(49, 39, 79, 1),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30),
+                            )),
+                        SizedBox(
+                          height: 30,
+                          width: width,
+                        ),
+                        FadeAnimation(
+                            1.7,
+                            Container(
+                              width: 9 * width / 10,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color.fromRGBO(196, 135, 198, .3),
+                                      blurRadius: 20,
+                                      offset: Offset(0, 10),
+                                    )
+                                  ]),
+                              child: Form(
+                                key: _formkey,
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      width: width,
+                                      decoration: BoxDecoration(
+                                          border: Border(
+                                              bottom: BorderSide(
+                                                  color: Colors.grey[200]))),
+                                      child: TextFormField(
+                                        validator: (val) => val.isEmpty
+                                            ? 'Enter a valid email ID'
+                                            : null,
+                                        onChanged: (val) {
+                                          setState(() => _email = val);
+                                        },
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "Email ID",
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey)),
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      child: TextFormField(
+                                        validator: (val) => val.length < 6
+                                            ? 'Enter a password 6 chars or longer'
+                                            : null,
+                                        onChanged: (val) {
+                                          setState(() => _password = val);
+                                        },
+                                        obscureText: true,
+                                        decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "Password",
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey)),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        FadeAnimation(
+                            1.7,
+                            Center(
+                                child: Text(
+                              "Forgot Password?",
+                              style: TextStyle(
+                                  color: Color.fromRGBO(196, 135, 198, 1)),
+                            ))),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        FadeAnimation(
+                            1.9,
+                            RectGetter(
+                              key: rectGetterKey,
+                              child: ProgressButton(
+                                onPressed: _onPress,
+                                validate: _validate,
+                                postLogin: _postLogin,
+                              ),
+                            )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        FadeAnimation(
+                            2,
+                            Center(
+                                child: FlatButton(
+                              child: Text(
+                                "Create Account",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(49, 39, 79, .6)),
+                              ),
+                              onPressed: () => widget.toggleView(),
+                            ))),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
       _ripple()
     ]);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    User _user = Provider.of<User>(context);
-    print(_user.toString() + '@LoginPage');
-    // _postLogin();
   }
 
   bool _validate() {
@@ -297,7 +251,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _postLogin() async {
+  void _postLogin() async {
     setState(() {
       rect = RectGetter.getRectFromKey(rectGetterKey);
     });
@@ -311,10 +265,20 @@ class _LoginPageState extends State<LoginPage> {
     _navigate(user: _user);
   }
 
-  void _navigate({User user}) {
+  void _navigate({User user}) async {
     print(user.uid + '@_navigate');
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => HomePage(user: user)));
+    DatabaseService _dataBase = DatabaseService(uid: user.uid);
+
+    if (await _dataBase.checkUserData()) {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomePage(user: user, hasUsername: true)));
+    } else {
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => HomePage(
+                user: user,
+                hasUsername: false,
+              )));
+    }
   }
 }
 
