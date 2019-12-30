@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+admin.initializeApp();
 
 export const collaborativeFiltering = functions.https.onRequest(
   async (request, response) => {
-    admin.initializeApp();
     const uid = request.query.uid;
     console.log("Query is made by :- " + uid);
     const userSnapshot = await admin

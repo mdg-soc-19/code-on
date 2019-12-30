@@ -11,7 +11,7 @@ class RecommendedListTab extends StatelessWidget {
     final DatabaseService _dataBase = DatabaseService(uid: user.uid);
 
     return FutureBuilder(
-      future: _dataBase.fetchRecommendation(),
+      future: _dataBase.fetchRecommendation(user: user),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
@@ -36,7 +36,26 @@ class RecommendedListTab extends StatelessWidget {
                   scrollDirection: Axis.vertical,
                   itemCount: 20,
                   itemBuilder: (BuildContext context, int index) {
-                    return makeCard(index);
+                    return Card(
+                      margin: new EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 6.0),
+                      elevation: 4.0,
+                      child: Container(
+                        color: Colors.white38,
+                        child: ListTile(
+                          title: Text(snapshot.data[index].name),
+                          subtitle: Text(snapshot.data[index].id),
+                          leading: Container(
+                            padding: EdgeInsets.only(right: 12.0),
+                            decoration: new BoxDecoration(
+                                border: new Border(
+                                    right: new BorderSide(
+                                        width: 1.0, color: Colors.blueAccent))),
+                            child: Icon(Icons.autorenew, color: Colors.blue),
+                          ),
+                        ),
+                      ),
+                    );
                   },
                 ));
           }
@@ -46,27 +65,5 @@ class RecommendedListTab extends StatelessWidget {
       },
     );
     //
-  }
-
-  Card makeCard(int index) {
-    return Card(
-      margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
-      elevation: 4.0,
-      child: Container(
-        color: Colors.white38,
-        child: ListTile(
-          title: Text(index.toString() + ' Hello What'),
-          subtitle: Text('Here comes the ID of problem'),
-          leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
-            decoration: new BoxDecoration(
-                border: new Border(
-                    right:
-                        new BorderSide(width: 1.0, color: Colors.blueAccent))),
-            child: Icon(Icons.autorenew, color: Colors.blue),
-          ),
-        ),
-      ),
-    );
   }
 }

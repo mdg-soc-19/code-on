@@ -47,26 +47,47 @@ class ApiService {
   }
 
   //Function to fetch user data from CodeForces
-  Future fetchUserData(User user) async {
+  Future<List<Problem>> fetchUserData(User user) async {
     try {
       String url =
           'https://codeforces.com/api/user.status?handle=' + user.username;
       var jsonResponse = await http.get(url);
-      final DatabaseService _dataBase = DatabaseService(uid: user.uid);
       ComplexUserData complexUserData =
           ComplexUserData.fromJson(json.decode(jsonResponse.body));
       List<Problem> problems = new List();
       for (var i in complexUserData.result) {
         if (i.verdict == Status.OK) {
           problems.add(Problem(
-              id: i.problem.contestId.toString() + i.problem.index,
-              name: i.problem.name,
-              points: i.problem.points,
-              tags: i.problem.tags));
+            id: i.problem.contestId.toString() + i.problem.index,
+          ));
         }
       }
+      return problems;
+    } catch (error) {
+      print(error.toString() + 'asasdasd');
+      return null;
+    }
+  }
+
+  //Function to fetch problemset data from CodeForces servers
+  Future<List<Problem>> fetchProblemset() async {
+    try {
+      String url = 'https://codeforces.com/api/problemset.problems';
+      var jsonResponse = await http.get(url);
+      ComplexProblemSet problemSet =
+          ComplexProblemSet.fromJson(json.decode(jsonResponse.body));
+      List<Problem> problems = new List();
+      for (var p in problemSet.result.problems) {
+        problems.add(Problem(
+            id: p.contestId.toString() + p.index,
+            name: p.name,
+            points: p.points,
+            tags: p.tags));
+      }
+      return problems;
     } catch (error) {
       print(error.toString());
+      return null;
     }
   }
 }

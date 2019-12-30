@@ -268,8 +268,9 @@ class _LoginPageState extends State<LoginPage> {
   void _navigate({User user}) async {
     print(user.uid + '@_navigate');
     DatabaseService _dataBase = DatabaseService(uid: user.uid);
-
-    if (await _dataBase.checkUserData()) {
+    String username = await _dataBase.checkUserData();
+    if (username != null) {
+      user.setUserName(username);
       Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => HomePage(user: user, hasUsername: true)));
     } else {
