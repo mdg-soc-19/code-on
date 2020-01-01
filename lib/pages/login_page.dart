@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:provider/provider.dart';
 import 'package:rect_getter/rect_getter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:code_on/models/user.dart';
 import 'package:code_on/pages/home_page.dart';
 import 'package:code_on/services/database.dart';
 import 'package:code_on/services/auth.dart';
 import 'package:code_on/animations/fade_animations.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   final Function toggleView;
@@ -49,13 +48,23 @@ class _LoginPageState extends State<LoginPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(150),
               gradient: LinearGradient(
-                  colors: [Colors.indigo, Colors.indigo[100]],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight),
+                  colors: [Colors.blue, Colors.blue[50]],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter),
             ),
             height: 48.0,
           ));
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLogs().then((result) {
+      setState(() {
+        signedInUser = result;
+      });
+    });
   }
 
   @override
@@ -165,6 +174,8 @@ class _LoginPageState extends State<LoginPage> {
                                               hintText: "Email ID",
                                               hintStyle: TextStyle(
                                                   color: Colors.grey)),
+                                          keyboardType:
+                                              TextInputType.emailAddress,
                                         ),
                                       ),
                                       Container(
@@ -182,6 +193,8 @@ class _LoginPageState extends State<LoginPage> {
                                               hintText: "Password",
                                               hintStyle: TextStyle(
                                                   color: Colors.grey)),
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
                                         ),
                                       )
                                     ],
@@ -202,13 +215,15 @@ class _LoginPageState extends State<LoginPage> {
                               Center(
                                 child: Row(children: <Widget>[
                                   Text(
-                                    'Keep me signed in ',
+                                    'Keep me signed in',
                                     style: TextStyle(
                                         color:
                                             Color.fromRGBO(196, 135, 198, 1)),
                                   ),
                                   Checkbox(
                                     value: keepSignedIn,
+                                    activeColor:
+                                        Color.fromRGBO(196, 135, 198, 1),
                                     onChanged: (val) {
                                       setState(() {
                                         keepSignedIn = val;
@@ -261,24 +276,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _checkLogs().then((result) {
-      setState(() {
-        signedInUser = result;
-      });
-    });
-  }
-
-  bool _validate() {
-    if (_formkey.currentState.validate()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   Future<User> _checkLogs() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String uid = prefs.getString('uid');
@@ -290,16 +287,25 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  bool _validate() {
+    if (_formkey.currentState.validate()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   Future<bool> _onPress() async {
     dynamic result = await _auth.signInWithEmailAndPassword(_email, _password);
-    if (keepSignedIn) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('uid', result.uid);
-    }
+
     if (result == null) {
       print('Error');
       return false;
     } else {
+      if (keepSignedIn) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('uid', result.uid);
+      }
       return true;
     }
   }

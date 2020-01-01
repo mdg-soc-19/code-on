@@ -31,7 +31,10 @@ class _AuthenticateState extends State<Authenticate> {
         getUser: _getUser,
       );
     } else {
-      return RegisterPage(toggleView: _toggleView);
+      return RegisterPage(
+        toggleView: _toggleView,
+        getUser: _getUser,
+      );
     }
   }
 }
