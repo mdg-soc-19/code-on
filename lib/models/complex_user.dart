@@ -8,16 +8,19 @@ String complexUserDataToJson(ComplexUserData data) =>
 
 class ComplexUserData {
   Status status;
+  String comment;
   List<Result> result;
 
   ComplexUserData({
     this.status,
     this.result,
+    this.comment,
   });
 
   factory ComplexUserData.fromJson(Map<String, dynamic> json) =>
       ComplexUserData(
         status: statusValues.map[json["status"]],
+        comment: json["comment"],
         result:
             List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
       );
@@ -33,7 +36,7 @@ class Result {
   int contestId;
   int creationTimeSeconds;
   int relativeTimeSeconds;
-  Problem problem;
+  UserProblem problem;
   Author author;
   ProgrammingLanguage programmingLanguage;
   Status verdict;
@@ -62,7 +65,7 @@ class Result {
         contestId: json["contestId"],
         creationTimeSeconds: json["creationTimeSeconds"],
         relativeTimeSeconds: json["relativeTimeSeconds"],
-        problem: Problem.fromJson(json["problem"]),
+        problem: UserProblem.fromJson(json["problem"]),
         author: Author.fromJson(json["author"]),
         programmingLanguage:
             programmingLanguageValues.map[json["programmingLanguage"]],
@@ -154,7 +157,7 @@ final participantTypeValues = EnumValues({
   "PRACTICE": ParticipantType.PRACTICE
 });
 
-class Problem {
+class UserProblem {
   int contestId;
   String index;
   String name;
@@ -163,7 +166,7 @@ class Problem {
   int rating;
   List<String> tags;
 
-  Problem({
+  UserProblem({
     this.contestId,
     this.index,
     this.name,
@@ -173,7 +176,7 @@ class Problem {
     this.tags,
   });
 
-  factory Problem.fromJson(Map<String, dynamic> json) => Problem(
+  factory UserProblem.fromJson(Map<String, dynamic> json) => UserProblem(
         contestId: json["contestId"],
         index: json["index"],
         name: json["name"],
@@ -210,9 +213,10 @@ enum Testset { TESTS, PRETESTS }
 final testsetValues =
     EnumValues({"PRETESTS": Testset.PRETESTS, "TESTS": Testset.TESTS});
 
-enum Status { OK, WRONG_ANSWER, RUNTIME_ERROR }
+enum Status { OK, WRONG_ANSWER, RUNTIME_ERROR, FAILED }
 
 final statusValues = EnumValues({
+  "FAILED": Status.FAILED,
   "OK": Status.OK,
   "RUNTIME_ERROR": Status.RUNTIME_ERROR,
   "WRONG_ANSWER": Status.WRONG_ANSWER

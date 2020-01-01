@@ -1,7 +1,9 @@
+import 'package:code_on/models/user.dart';
 import 'package:flutter/material.dart';
 
 import 'package:code_on/pages/login_page.dart';
 import 'package:code_on/pages/register_page.dart';
+import 'package:provider/provider.dart';
 
 class Authenticate extends StatefulWidget {
   @override
@@ -10,17 +12,29 @@ class Authenticate extends StatefulWidget {
 
 class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
-  void toggleView() {
-    //print(showSignIn.toString());
+  User _user;
+  void _toggleView() {
     setState(() => showSignIn = !showSignIn);
+  }
+
+  User _getUser() {
+    return _user;
   }
 
   @override
   Widget build(BuildContext context) {
+    _user = Provider.of<User>(context);
+    print(_user.toString() + '@Authenticate');
     if (showSignIn) {
-      return LoginPage(toggleView: toggleView);
+      return LoginPage(
+        toggleView: _toggleView,
+        getUser: _getUser,
+      );
     } else {
-      return RegisterPage(toggleView: toggleView);
+      return RegisterPage(
+        toggleView: _toggleView,
+        getUser: _getUser,
+      );
     }
   }
 }

@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+admin.initializeApp();
 
 export const collaborativeFiltering = functions.https.onRequest(
   async (request, response) => {
-    admin.initializeApp();
     const uid = request.query.uid;
     console.log("Query is made by :- " + uid);
     const userSnapshot = await admin
@@ -114,22 +114,22 @@ export const collaborativeFiltering = functions.https.onRequest(
     const recommendationsI: number[] = [];
     for (let i = 0; i < problemSet.length; i++) {
       let prsum: number = 0;
-      let sum: number = 0;
+      let sum1: number = 0;
       for (let j = 0; j < problemSet.length; j++) {
         prsum += dataset[userIndex][j] * iimat[i][j];
-        sum += iimat[i][j];
+        sum1 += iimat[i][j];
       }
-      if (sum == 0) {
+      if (sum1 === 0) {
         recommendationsI[i] = 0;
       } else {
-        recommendationsI[i] = prsum / sum;
+        recommendationsI[i] = prsum / sum1;
       }
     }
 
     //#################################User Based Collaborative Filtering#################################
     //Generating the user-similarity matrix.
     const uumat: number[][] = [];
-    for (let i = 0; i < problemSet.length; i++) {
+    for (let i = 0; i < userList.length; i++) {
       uumat[i] = [];
     }
     for (let i = 0; i < userList.length; i++) {
@@ -160,7 +160,7 @@ export const collaborativeFiltering = functions.https.onRequest(
     //Generating recommendations for User Based Collaborative Filtering
     const recommendationsU: number[] = [];
     let sum: number = 0;
-    for (let i = 0; i < problemSet.length; i++) {
+    for (let i = 0; i < userList.length; i++) {
       sum += uumat[userIndex][i];
     }
     for (let i = 0; i < problemSet.length; i++) {
