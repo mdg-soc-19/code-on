@@ -5,6 +5,7 @@ import 'package:code_on/services/api.dart';
 import 'package:code_on/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class UsernamePage extends StatefulWidget {
@@ -125,13 +126,19 @@ class _UsernamePageState extends State<UsernamePage> {
                     onPressed: () async {
                       _user.setUserName(_username);
                       await _api.fetchAndUploadProblemset();
-                      _api.fetchAndUploadData(_user);
-
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => HomePage(
-                                user: _user,
-                                hasUsername: true,
-                              )));
+                      bool result = await _api.fetchAndUploadData(_user);
+                      if (result) {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => HomePage(
+                                  user: _user,
+                                  hasUsername: true,
+                                )));
+                      } else {
+                        Fluttertoast.showToast(
+                            msg:
+                                "Invalid username, please enter a valid Codeforces username.",
+                            toastLength: Toast.LENGTH_LONG);
+                      }
                     },
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

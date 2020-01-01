@@ -8,16 +8,19 @@ String complexUserDataToJson(ComplexUserData data) =>
 
 class ComplexUserData {
   Status status;
+  String comment;
   List<Result> result;
 
   ComplexUserData({
     this.status,
     this.result,
+    this.comment,
   });
 
   factory ComplexUserData.fromJson(Map<String, dynamic> json) =>
       ComplexUserData(
         status: statusValues.map[json["status"]],
+        comment: json["comment"],
         result:
             List<Result>.from(json["result"].map((x) => Result.fromJson(x))),
       );
@@ -210,9 +213,10 @@ enum Testset { TESTS, PRETESTS }
 final testsetValues =
     EnumValues({"PRETESTS": Testset.PRETESTS, "TESTS": Testset.TESTS});
 
-enum Status { OK, WRONG_ANSWER, RUNTIME_ERROR }
+enum Status { OK, WRONG_ANSWER, RUNTIME_ERROR, FAILED }
 
 final statusValues = EnumValues({
+  "FAILED": Status.FAILED,
   "OK": Status.OK,
   "RUNTIME_ERROR": Status.RUNTIME_ERROR,
   "WRONG_ANSWER": Status.WRONG_ANSWER

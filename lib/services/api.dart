@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:code_on/models/complex_problems.dart';
 import 'package:code_on/models/problems.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:code_on/models/complex_user.dart';
@@ -9,13 +10,21 @@ import 'database.dart';
 
 class ApiService {
   //Function to fetch user data from CodeForces servers and upload to Database
-  Future fetchAndUploadData(User user) async {
-    String url =
-        'https://codeforces.com/api/user.status?handle=' + user.username;
-    var jsonResponse = await http.get(url);
+  Future<bool> fetchAndUploadData(User user) async {
+    ComplexUserData complexUserData;
+    try {
+      String url =
+          'https://codeforces.com/api/user.status?handle=' + user.username;
+      var jsonResponse = await http.get(url);
+      complexUserData =
+          ComplexUserData.fromJson(json.decode(jsonResponse.body));
+    } catch (error) {
+      print(error.toString());
+      return false;
+    }
+
     final DatabaseService _dataBase = DatabaseService(uid: user.uid);
-    ComplexUserData complexUserData =
-        ComplexUserData.fromJson(json.decode(jsonResponse.body));
+
     List<String> problems = new List();
     for (var r in complexUserData.result) {
       if (r.verdict == Status.OK) {

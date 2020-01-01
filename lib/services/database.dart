@@ -42,7 +42,7 @@ class DatabaseService {
         .setData({'arrayOfProblems': FieldValue.arrayUnion(problems)});
   }
 
-  Future fetchRecommendation({int type = 1, User user}) async {
+  Future fetchRecommendation({int type = 0, User user}) async {
     List map;
     try {
       String url =

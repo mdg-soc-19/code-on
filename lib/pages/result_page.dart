@@ -1,4 +1,5 @@
 import 'package:code_on/models/user.dart';
+import 'package:code_on/pages/profile_tab.dart';
 import 'package:code_on/pages/recommended_list_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -33,7 +34,7 @@ class _ResultPageState extends State<ResultPage> {
                 RecommendedListTab(
                   user: _user,
                 ),
-                Text('Hello There')
+                ProfileTab()
               ],
             )),
       ),

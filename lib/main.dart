@@ -7,6 +7,9 @@ import 'package:code_on/pages/auth_page.dart';
 
 void main() => runApp(MyApp());
 
+// void main() async {
+
+// }
 // class Wrapper extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
