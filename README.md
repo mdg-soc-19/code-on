@@ -9,10 +9,11 @@ Complete :-
 - Authentication.
 - Firestore for problems.
 - Cloud Functions to generate recommendations.
+- UI to present generated recommendations.
 
 Under Progress:-
 
-- UI to present generated recommendations.
+- Bug fixes and adding minor features.
 
 ## Algorithm
 
