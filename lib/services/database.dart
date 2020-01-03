@@ -5,6 +5,7 @@ import 'package:code_on/models/problems.dart';
 import 'package:code_on/models/user.dart';
 import 'package:code_on/services/api.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseService {
   final String uid;
@@ -42,7 +43,7 @@ class DatabaseService {
         .setData({'arrayOfProblems': FieldValue.arrayUnion(problems)});
   }
 
-  Future fetchRecommendation({int type = 0, User user}) async {
+  Future<List<Problem>> fetchRecommendation({int type = 0, User user}) async {
     List map;
     try {
       String url =
@@ -52,7 +53,7 @@ class DatabaseService {
       map = json.decode(jsonResponse.body);
     } catch (error) {
       print(error.toString());
-      return error;
+      return null;
     }
     print(map);
     List recommendation = new List(map[0].length);
@@ -66,7 +67,7 @@ class DatabaseService {
       recommendation = map[1];
     } else {
       print('Wrong type selected.');
-      return 'Error';
+      return null;
     }
     ApiService _api = ApiService();
     List<Problem> userSolves = await _api.fetchUserData(user);
@@ -74,23 +75,17 @@ class DatabaseService {
     List<Problem> problemSet = await _api.fetchProblemset();
     List<Problem> recommendedProblems = List();
     if (problemSet.length == recommendation.length) {
-      // for(int i=0;i<userSolves.length;i++){
-      //   for(int j=0;j<problemSet.length;j++){
-      //     if(problemSet[j].id==userSolves[i].id){
-      //       recommendation[j]=0;
-      //     }
-      //   }
-      // }
-      // Map<String,double> unsortedMap = Map.fromIterables(, values)
       Map<String, double> unsortedMap = Map();
       for (int i = 0; i < problemSet.length; i++) {
         for (int j = 0; j < userSolves.length; j++) {
-          if (userSolves[j].id == problemSet[i].id) {
+          if ((userSolves[j].contestID + userSolves[j].index) ==
+              (problemSet[i].contestID + problemSet[i].index)) {
             recommendation[i] = 0;
           }
         }
         if (recommendation[i] != 0) {
-          unsortedMap[problemSet[i].id] = recommendation[i];
+          unsortedMap[problemSet[i].contestID + problemSet[i].index] =
+              recommendation[i];
         }
       }
       var sortedKeys = unsortedMap.keys.toList(growable: false)
@@ -99,17 +94,24 @@ class DatabaseService {
       print(sortedKeys);
       for (int i = 0; i < 20; i++) {
         for (int j = 0; j < problemSet.length; j++) {
-          if (problemSet[j].id == sortedKeys[i]) {
+          if (problemSet[j].contestID + problemSet[j].index == sortedKeys[i]) {
             recommendedProblems.add(problemSet[j]);
           }
         }
       }
+      SharedPreferences pref = await SharedPreferences.getInstance();
+
+      pref.setString(
+          'recommendationData',
+          json.encode({
+            "problems":
+                List<dynamic>.from(recommendedProblems.map((x) => x.toJson()))
+          }));
       return recommendedProblems;
     } else {
       print(
           '*********************************** Data Missmatch ***********************************');
+      return null;
     }
-
-    return map;
   }
 }
