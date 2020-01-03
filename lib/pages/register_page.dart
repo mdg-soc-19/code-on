@@ -329,7 +329,7 @@ class ProgressButton extends StatefulWidget {
 }
 
 class _ProgressButtonState extends State<ProgressButton>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   User _status;
   int _state = 0;
   double _width = 200.0;

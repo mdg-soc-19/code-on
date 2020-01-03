@@ -67,8 +67,8 @@ class ApiService {
       for (var i in complexUserData.result) {
         if (i.verdict == Status.OK) {
           problems.add(Problem(
-            id: i.problem.contestId.toString() + i.problem.index,
-          ));
+              index: i.problem.index,
+              contestID: i.problem.contestId.toString()));
         }
       }
       return problems;
@@ -88,7 +88,8 @@ class ApiService {
       List<Problem> problems = new List();
       for (var p in problemSet.result.problems) {
         problems.add(Problem(
-            id: p.contestId.toString() + p.index,
+            index: p.index,
+            contestID: p.contestId.toString(),
             name: p.name,
             points: p.points,
             tags: p.tags));
